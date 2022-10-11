@@ -1,6 +1,11 @@
 package com.bustedminds.kafka.consumer.controller;
 
+
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,12 +21,13 @@ public class ConsumerController {
 	@Autowired
 	private Gson gson;
 	
-	@KafkaListener(topics= {"new-student"})
+	private static final Logger log = LoggerFactory.getLogger(ConsumerController.class);
+	
+	@KafkaListener(topics= "#{'${topic.name}'}")
 	public void newStudents(@RequestBody String student) {
-		System.out.println("Kafka Event Consumed is:"+student);
+		log.info("Kafka Event Consumed is:"+student);
 		Student newStudent = gson.fromJson(student, Student.class);
-		System.out.println("Converted Value:"+newStudent.toString());
-		
+		log.info("Converted Value:"+newStudent.toString());
 	}
-
+	
 }
